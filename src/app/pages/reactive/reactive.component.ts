@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-reactive',
@@ -19,14 +19,24 @@ export class ReactiveComponent implements OnInit {
 
   crearFormulario(){
     this.forma = this.fb.group({
-      nombre: [''],
-      apellido: [''],
-      correo: ['']
+      nombre: ['', [Validators.required, Validators.minLength(5)]],
+      apellido: ['', Validators.required],
+      correo: ['', Validators.required]
     });
   }
 
   guardar(){
-    console.log('Guardar');
+    console.log(this.forma);
+
+    if(this.forma.invalid){
+      return Object.values(this.forma.controls).forEach(control=> {
+        control.markAllAsTouched();
+      });
+    }
+  }
+
+  get nombreNoValido(){
+    return this.forma.get('nombre').invalid && this.forma.get('nombre').touched;
   }
 
 }
